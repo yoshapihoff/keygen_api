@@ -3,7 +3,7 @@ from flask_api import FlaskAPI
 app = FlaskAPI(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['CACHE_TYPE'] = 'simple'  # for debug
+app.config['CACHE_TYPE'] = 'null'  # for debug
 
 from requestHandler import RequestHandler as rh
 
