@@ -3,6 +3,7 @@ from flask import request
 
 app = FlaskAPI(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 from keygen import *
 
