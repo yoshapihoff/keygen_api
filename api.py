@@ -1,53 +1,31 @@
 from flask_api import FlaskAPI
-from flask import request
 
 app = FlaskAPI(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['CACHE_TYPE'] = 'simple'  # for debug
 
-from keygen import *
+from requestHandler import RequestHandler as rh
 
 
 @app.route("/", methods=['GET'])
 def index():
-    return {'free_keys_left': free_keys_left()}
+    return rh.get_keys_left_count()
 
 
 @app.route("/getkey", methods=['GET'])
 def getkey():
-    key_str = generate_key()
-    return {'key': key_str}
+    return rh.get_key()
 
 
 @app.route("/keyinfo", methods=['GET'])
 def keyinfo():
-    key_str = request.args.get('key')
-    if key_str:
-        if validate_key(key_str):
-            key_info = get_key_information(key_str)
-            return {'key_information': key_info.value}
-        else:
-            return {'error': f'invalid key \'{key_str}\''}
-
-    return {'error': 'you must specify the parameter \'key\''}
+    return rh.get_key_info()
 
 
 @app.route("/setkeyused", methods=['GET'])
 def setkeyused():
-    key_str = request.args.get('key')
-    if key_str:
-        if validate_key(key_str):
-            key_info = get_key_information(key_str)
-            if key_info == KeyInfo.sent:
-                set_key_used(key_str)
-                return {'result': f'key \'{key_str}\' marked as used'}
-            else:
-                already_word = 'already ' if key_info == KeyInfo.used else ''
-                return {'error': f'key \'{key_str}\' {already_word}marked as \'{key_info.value}\''}
-        else:
-            return {'error': f'invalid key \'{key_str}\''}
-
-    return {'error': 'you must specify the parameter \'key\''}
+    return rh.set_key_used()
 
 
 @app.errorhandler(404)

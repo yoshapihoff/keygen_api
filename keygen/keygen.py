@@ -3,10 +3,9 @@ import string
 from enum import Enum
 import re
 
-from keygen.model import Key, db
+from flask_sqlalchemy_caching import FromCache
 
-db.create_all()
-db.session.commit()
+from keygen.model import Key, db, cache
 
 chars = string.ascii_letters + string.digits
 
@@ -32,7 +31,7 @@ def generate_key():
 
 
 def validate_key(key_str):
-    if key_str:
+    if key_str and len(key_str) == 4:
         match = re.match(r'[a-zA-Z0-9]{4}', key_str.strip())
         return match is not None
 
@@ -73,7 +72,7 @@ def generate_key_string(length):
 
 
 def key_exists(key_str):
-    return Key.query.filter(Key.value == key_str).count() > 0
+    return Key.query.filter(Key.value == key_str).options(FromCache(cache)).count() > 0
 
 
 def keys_count():
@@ -81,4 +80,4 @@ def keys_count():
 
 
 def get_key(key_str):
-    return Key.query.filter(Key.value == key_str).first()
+    return Key.query.filter(Key.value == key_str).options(FromCache(cache)).first()

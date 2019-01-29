@@ -1,7 +1,12 @@
-from api import app
-from flask_sqlalchemy import SQLAlchemy
+import os
 
-db = SQLAlchemy(app)
+from api import app
+from flask_sqlalchemy import SQLAlchemy, Model
+from flask_sqlalchemy_caching import CachingQuery
+from flask_caching import Cache
+
+Model.query_class = CachingQuery
+db = SQLAlchemy(app, session_options={'query_cls': CachingQuery})
 
 
 class Key(db.Model):
@@ -16,3 +21,10 @@ class Key(db.Model):
     def __init__(self, value):
         self.value = value
         self.used = False
+
+
+with app.app_context():
+    if os.path.isfile('base.db'):
+        db.create_all()
+
+cache = Cache(app)
