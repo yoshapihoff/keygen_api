@@ -1,31 +1,33 @@
 from flask_api import FlaskAPI
+from flask import send_from_directory
+import os
 
 app = FlaskAPI(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['CACHE_TYPE'] = 'null'  # for debug
+app.config['CACHE_TYPE'] = 'simple'  # for debug
 
-from requestHandler import RequestHandler as rh
+from requestHandler import RequestHandler as Handler
 
 
 @app.route("/", methods=['GET'])
 def index():
-    return rh.get_keys_left_count()
+    return Handler.get_keys_left_count()
 
 
 @app.route("/getkey", methods=['GET'])
 def getkey():
-    return rh.get_key()
+    return Handler.get_key()
 
 
 @app.route("/keyinfo", methods=['GET'])
 def keyinfo():
-    return rh.get_key_info()
+    return Handler.get_key_info()
 
 
 @app.route("/setkeyused", methods=['GET'])
 def setkeyused():
-    return rh.set_key_used()
+    return Handler.set_key_used()
 
 
 @app.errorhandler(404)
@@ -36,6 +38,12 @@ def handle_error_404(error):
 @app.errorhandler(500)
 def handle_error_500(error):
     return {'error': 500, 'description': error}
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
 
 
 if __name__ == '__main__':
