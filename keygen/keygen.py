@@ -72,7 +72,7 @@ def _generate_key_string(length):
 
 
 def _key_exists(key_str):
-    return Key.query.options(FromCache(cache)).filter(Key.value == key_str).count() > 0
+    return Key.query.filter(Key.value == key_str).options(FromCache(cache)).scalar() is not None
 
 
 def _keys_count():
@@ -80,4 +80,4 @@ def _keys_count():
 
 
 def _get_key(key_str):
-    return Key.query.options(FromCache(cache)).filter(Key.value == key_str).first()
+    return Key.query.filter(Key.value == key_str).options(FromCache(cache)).first()
