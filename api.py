@@ -6,13 +6,13 @@ app = FlaskAPI(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['CACHE_TYPE'] = 'filesystem'
+app.config['CACHE_TYPE'] = 'null'
 
-cache_path = './cache_temp/'
-
-if not os.path.exists(cache_path):
-    os.makedirs(cache_path)
-app.config['CACHE_DIR'] = cache_path
+# cache_path = './cache_temp/'
+#
+# if not os.path.exists(cache_path):
+#     os.makedirs(cache_path)
+# app.config['CACHE_DIR'] = cache_path
 
 from requestHandler import RequestHandler as Handler
 
