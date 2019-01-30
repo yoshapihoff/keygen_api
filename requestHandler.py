@@ -13,8 +13,7 @@ class RequestHandler:
         return {'key': key_str}
 
     @staticmethod
-    def get_key_info():
-        key_str = request.args.get('key')
+    def get_key_info(key_str):
         if key_str:
             if validate_key(key_str):
                 key_info = get_key_information(key_str)
@@ -25,8 +24,7 @@ class RequestHandler:
         return {'error': 'you must specify the parameter \'key\''}
 
     @staticmethod
-    def set_key_used():
-        key_str = request.args.get('key')
+    def set_key_used(key_str):
         if key_str:
             if validate_key(key_str):
                 key_info = get_key_information(key_str)

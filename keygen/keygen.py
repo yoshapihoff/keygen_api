@@ -7,7 +7,7 @@ from flask_sqlalchemy_caching import FromCache
 
 from keygen.model import Key, db, cache
 
-chars = string.ascii_letters + string.digits
+_chars = string.ascii_letters + string.digits
 
 
 class KeyInfo(Enum):
@@ -20,9 +20,9 @@ def generate_key():
     if free_keys_left() == 0:
         return False
 
-    key_str = generate_key_string(4)
-    while key_exists(key_str):
-        key_str = generate_key_string(4)
+    key_str = _generate_key_string(4)
+    while _key_exists(key_str):
+        key_str = _generate_key_string(4)
 
     key = Key(key_str)
     db.session.add(key)
@@ -41,7 +41,7 @@ def set_key_used(key_str):
         return False
 
     key_str = key_str.strip()
-    key = get_key(key_str)
+    key = _get_key(key_str)
     if key and not key.used:
         key.used = True
         db.session.add(key)
@@ -53,10 +53,10 @@ def get_key_information(key_str):
         return False
 
     key_str = key_str.strip()
-    if not key_exists(key_str):
+    if not _key_exists(key_str):
         return KeyInfo.free
     else:
-        key = get_key(key_str)
+        key = _get_key(key_str)
         if key.used:
             return KeyInfo.used
         else:
@@ -64,20 +64,20 @@ def get_key_information(key_str):
 
 
 def free_keys_left():
-    return (len(chars) ** 4) - keys_count()
+    return (len(_chars) ** 4) - _keys_count()
 
 
-def generate_key_string(length):
-    return ''.join(random.choice(chars) for _ in range(length))
+def _generate_key_string(length):
+    return ''.join(random.choice(_chars) for _ in range(length))
 
 
-def key_exists(key_str):
-    return Key.query.filter(Key.value == key_str).options(FromCache(cache)).count() > 0
+def _key_exists(key_str):
+    return Key.query.options(FromCache(cache)).get().filter(Key.value == key_str).count() > 0
 
 
-def keys_count():
-    return Key.query.count()
+def _keys_count():
+    return Key.query.options(FromCache(cache)).count()
 
 
-def get_key(key_str):
-    return Key.query.filter(Key.value == key_str).options(FromCache(cache)).first()
+def _get_key(key_str):
+    return Key.query.options(FromCache(cache)).get().filter(Key.value == key_str).first()

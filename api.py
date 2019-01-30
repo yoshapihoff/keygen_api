@@ -3,9 +3,16 @@ from flask import send_from_directory
 import os
 
 app = FlaskAPI(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['CACHE_TYPE'] = 'simple'  # for debug
+app.config['CACHE_TYPE'] = 'filesystem'
+
+cache_path = './cache_temp/'
+
+if not os.path.exists(cache_path):
+    os.makedirs(cache_path)
+app.config['CACHE_DIR'] = cache_path
 
 from requestHandler import RequestHandler as Handler
 
@@ -20,14 +27,16 @@ def getkey():
     return Handler.get_key()
 
 
-@app.route("/keyinfo", methods=['GET'])
-def keyinfo():
-    return Handler.get_key_info()
+@app.route("/keyinfo/", defaults={'key': None})
+@app.route("/keyinfo/<string:key>")
+def keyinfo(key):
+    return Handler.get_key_info(key)
 
 
-@app.route("/setkeyused", methods=['GET'])
-def setkeyused():
-    return Handler.set_key_used()
+@app.route("/setkeyused/", defaults={'key': None})
+@app.route("/setkeyused/<string:key>")
+def setkeyused(key):
+    return Handler.set_key_used(key)
 
 
 @app.errorhandler(404)
@@ -47,4 +56,4 @@ def favicon():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

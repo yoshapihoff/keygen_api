@@ -107,3 +107,6 @@ venv.bak/
 
 # SQLite db
 *.db
+
+# Cache
+cache_temp/
