@@ -1,4 +1,3 @@
-from flask import request
 from keygen import *
 
 
@@ -9,8 +8,7 @@ class RequestHandler:
 
     @staticmethod
     def get_key():
-        key_str = generate_key()
-        return {'key': key_str}
+        return {'key': generate_key()}
 
     @staticmethod
     def get_key_info(key_str):

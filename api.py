@@ -2,6 +2,8 @@ from flask_api import FlaskAPI
 from flask import send_from_directory
 import os
 
+key_length = 4
+
 app = FlaskAPI(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'

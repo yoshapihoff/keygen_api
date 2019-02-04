@@ -1,10 +1,10 @@
-from ..model import db
+from ..model import db, key_length
 
 
 class Key(db.Model):
     __tablename__ = 'keys'
 
-    value = db.Column(db.String(4), primary_key=True)
+    value = db.Column(db.String(key_length), primary_key=True)
     used = db.Column(db.Boolean)
 
     def __repr__(self):

@@ -4,7 +4,7 @@ from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy, Model
 from flask_sqlalchemy_caching import CachingQuery
 
-from api import app
+from api import app, key_length
 
 Model.query_class = CachingQuery
 db = SQLAlchemy(app, session_options={'query_cls': CachingQuery})
