@@ -16,4 +16,4 @@ with app.app_context():
     if not os.path.isfile('base.db'):
         db.create_all()
 
-cache = Cache(app)
+cache = Cache(app, config={'CACHE_TYPE': 'filesystem'})

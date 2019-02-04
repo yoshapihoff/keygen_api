@@ -21,7 +21,7 @@ class RequestHandler:
             else:
                 return {'error': f'invalid key \'{key_str}\''}
 
-        return {'error': 'you must specify the parameter \'key\''}
+        return {'error': 'you must specify the parameter \'/keyinfo/your_key\''}
 
     @staticmethod
     def set_key_used(key_str):
@@ -37,4 +37,4 @@ class RequestHandler:
             else:
                 return {'error': f'invalid key \'{key_str}\''}
 
-        return {'error': 'you must specify the parameter \'key\''}
+        return {'error': 'you must specify the parameter \'/setkeyused/your_key\''}
